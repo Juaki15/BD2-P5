@@ -1,12 +1,6 @@
-import java.io.File;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Scanner;
 
-public class Principal {
+public class Main {
 
     private static long empieza;
     private static long termina;
@@ -27,10 +21,15 @@ public class Principal {
 
                 File f = new File("salaries_data");
                 String insert = "INSERT INTO `apartado3` VALUES";
+                String optimizacion = "SET autocommit = 0;";
+                String optimizacion2 = "SET foreign_keys_checks = 0;";
+                String commit = "COMMIT;";
                 String join = "";
                 try {
                     Scanner sc = new Scanner(f);
                     empieza = System.currentTimeMillis();
+                    stmt.executeQuery(optimizacion);
+                    stmt.executeQuery(optimizacion2);
                     while (sc.hasNextLine()) {
                         String line = sc.nextLine();
                         String[] fields = line.split("\t");
@@ -39,6 +38,8 @@ public class Principal {
                                 + "');" + "\n";
                         stmt.execute(join);
                     }
+                    stmt.executeQuery(commit);
+                    stmt.executeQuery("SET foreign_keys_checks = 1;");
                     termina = System.currentTimeMillis();
                     System.out.println("Tiempo de ejecucion: " + (termina - empieza) + " milisegundos");
                     System.out.println("Tiempo de ejecucion: " + (termina - empieza) / 1000 + " segundos");
